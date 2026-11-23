@@ -93,6 +93,7 @@
     .case, .service { display: flex; flex-direction: column; }
     .case p, .service p { font-size: .96rem; }
     .case .small { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+    .case .demo-link { margin-top: 8px; }
     .tag { color: var(--blue); font-size: .8rem; font-weight: 700; margin-bottom: 12px; }
     .dark { background: var(--navy); color: white; }
     .dark .eyebrow { color: #ffce77; }
@@ -148,7 +149,7 @@
         <h1><span class="headline-long">Reporting that operations teams <span>actually use.</span></span><span class="headline-short">Reporting for <span>operations teams</span></span></h1>
         <p class="intro">I turn spreadsheets, ticketing systems and ClickUp data into Looker Studio dashboards that show where work is building up and what needs attention next.</p>
         <div class="actions">
-          <a class="button" href="#work">View case studies</a>
+          <a class="button" href="#work">Try live dashboards</a>
           <a class="button secondary" href="#contact">Discuss a project</a>
         </div>
       </div>
@@ -187,25 +188,25 @@
     <section id="work" class="wrap">
       <p class="eyebrow">Case studies</p>
       <h2>Three questions a dashboard can answer</h2>
-      <p class="muted">These examples use sample data, not internal records.</p>
+      <p class="muted">Start with sample data, then try each dashboard with your own spreadsheet rows. Your data stays in your browser.</p>
       <div class="grid">
         <article class="case">
           <span class="tag">IT operations</span>
           <h3>Where are service desk tickets building up?</h3>
           <p>Compare open and closed tickets by region and branch. Bring repeat issues, resolution time and overdue workload into one weekly review.</p>
-          <div class="small">Looker Studio · Sheets · Apps Script<br>Live demo coming soon</div>
+          <div class="small">Looker Studio · Sheets · Apps Script<br><a class="button secondary demo-link" aria-label="Try the service desk dashboard" href="./templates.html#service-desk">Try this dashboard →</a></div>
         </article>
         <article class="case">
           <span class="tag">Facilities & admin</span>
           <h3>Which branch complaints need a follow-up today?</h3>
           <p>Group pending complaints by how long they have been open. Filter by branch, category or status to find overdue cases without scanning the whole queue.</p>
-          <div class="small">Looker Studio · ClickUp · Sheets<br>Live demo coming soon</div>
+          <div class="small">Looker Studio · ClickUp · Sheets<br><a class="button secondary demo-link" aria-label="Try the branch complaints dashboard" href="./templates.html#complaints">Try this dashboard →</a></div>
         </article>
         <article class="case">
           <span class="tag">Sales performance</span>
           <h3>Where is revenue falling short of target?</h3>
           <p>Compare monthly revenue with targets, then look at regions, products and sales reps to see what explains the gap.</p>
-          <div class="small">Looker Studio · Sheets<br>Live demo coming soon</div>
+          <div class="small">Looker Studio · Sheets<br><a class="button secondary demo-link" aria-label="Try the sales dashboard" href="./templates.html#sales">Try this dashboard →</a></div>
         </article>
       </div>
     </section>
