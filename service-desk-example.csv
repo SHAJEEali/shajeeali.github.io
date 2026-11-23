@@ -1,0 +1,4 @@
+branch,status,age_days,opened_on,closed_on,region,category,priority,owner,escalated
+Harbor,Open,8,2026-10-23,,Coastal,Connectivity,High,Network team,Yes
+Ridge,Resolved,3,2026-09-15,2026-09-18,Central,Access,Normal,Service desk,No
+Harbor,Pending,2,2026-10-29,,Coastal,Equipment,Normal,,No

@@ -1,0 +1,4 @@
+branch,category,status,age_days,opened_on,closed_on,region,priority,owner,escalated
+Ridge,Facilities,Pending,12,2026-10-19,,Central,High,Facilities team,Yes
+Garden,Equipment,Open,7,2026-10-24,,North,Normal,Field team,No
+Ridge,Supplies,Closed,2,2026-09-12,2026-09-14,Central,Low,Branch support,No
