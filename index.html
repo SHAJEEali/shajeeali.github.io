@@ -108,6 +108,23 @@
       section { padding: 38px 0; }
       .board, .case, .service, .contact { padding: 18px; }
     }
+    .hero h1 > span { color: inherit; }
+    .hero .headline-short { display: none; }
+    @media (max-width: 800px) {
+      .strip p.wrap { margin-inline: auto; }
+    }
+    @media (max-width: 360px) {
+      header nav { padding-block: 10px; row-gap: 4px; }
+      header nav .actions {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%; gap: 0 12px;
+      }
+      header nav .actions a { display: flex; align-items: center; min-height: 44px; }
+      .hero { padding-top: 22px; }
+      .hero h1 { font-size: 2rem; line-height: 1.1; margin-bottom: 12px; text-wrap: balance; }
+      .hero .headline-long { display: none; }
+      .hero .headline-short { display: inline; }
+    }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   </style>
 </head>
@@ -128,7 +145,7 @@
     <div class="wrap hero">
       <div>
         <p class="eyebrow">Dashboard & Reporting Specialist</p>
-        <h1>Reporting that operations teams <span>actually use.</span></h1>
+        <h1><span class="headline-long">Reporting that operations teams <span>actually use.</span></span><span class="headline-short">Reporting for <span>operations teams</span></span></h1>
         <p class="intro">I turn spreadsheets, ticketing systems and ClickUp data into Looker Studio dashboards that show where work is building up and what needs attention next.</p>
         <div class="actions">
           <a class="button" href="#work">View case studies</a>
