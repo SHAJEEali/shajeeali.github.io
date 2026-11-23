@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-uZAX6tKsOoaF0BeiZaaqaswDNu6gmKogLynlhMrgu1Q='; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-3HMi1nT+qmpOph6aNQgifld4iOGLVB0JXXWCqYvyUJA='; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; form-action 'none'; base-uri 'none'">
   <title>Dashboard demos | Syed Shajee Ali Rizvi</title>
   <meta name="description" content="Test service desk, branch complaints and sales dashboards with sample data or your own spreadsheet rows, privately in your browser.">
   <style>:root{color-scheme:light;--ink:#19283c;--muted:#506174;--blue:#214c86;--navy:#142b48;--amber:#e5a73c;--paper:#f5f7fa;--line:#d6dfe8;--green:#146b49;--pale:#eaf1f9;--card:#fff;--focus:#a85f07;--num:ui-monospace,SFMono-Regular,Consolas,monospace;--gutter:18px}
@@ -74,7 +74,7 @@ button,select,input,textarea{font:inherit}button,select,input[type=number]{min-h
 <footer><div class="wrap foot"><span>Syed Shajee Ali Rizvi · Dashboard &amp; Reporting Specialist</span><a href="./#work">Back to case studies</a></div></footer>
 <script>'use strict';
 (() => {
-  const $ = id => document.getElementById(id);
+  const $ = id => document.getElementById(id) || (id.endsWith('-label') ? document.querySelector('label[for="'+id.slice(0,-6)+'"]') : null);
   const make = (tag, cls, text) => { const n=document.createElement(tag); if(cls)n.className=cls; if(text!==undefined)n.textContent=text; return n; };
   const templates = {
     'service-desk': {
