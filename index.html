@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Syed Shajee Ali Rizvi | Dashboard & Reporting Specialist</title>
+  <meta name="description" content="Looker Studio dashboards, Google Sheets automation and ClickUp reporting for operations teams.">
+  <style>
+    :root {
+      --ink: #19283c;
+      --muted: #506174;
+      --blue: #214c86;
+      --navy: #142b48;
+      --amber: #e5a73c;
+      --paper: #f5f7fa;
+      --line: #d6dfe8;
+      --green: #146b49;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font: 17px/1.6 system-ui, "Segoe UI", sans-serif;
+    }
+    a { color: var(--blue); }
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid #cd8616; outline-offset: 4px;
+    }
+    .wrap { width: min(1100px, calc(100% - 36px)); margin: auto; }
+    header { background: white; border-bottom: 1px solid var(--line); }
+    nav, .brand, .actions, .board-head, .legend, footer .wrap {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    nav, .board-head, footer .wrap { justify-content: space-between; }
+    nav { padding: 16px 0; }
+    .brand { gap: 10px; text-decoration: none; color: var(--ink); font-weight: 700; }
+    .mark {
+      display: grid; place-items: center; width: 38px; height: 38px;
+      background: var(--navy); color: white; border-radius: 9px;
+    }
+    .actions a { font-weight: 600; text-decoration: none; }
+    .actions a:hover, footer a:hover { text-decoration: underline; }
+    .hero {
+      display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+      gap: 48px; padding: 72px 0;
+    }
+    .eyebrow {
+      margin: 0 0 12px; color: var(--blue); font-size: .8rem;
+      font-weight: 750; text-transform: uppercase; letter-spacing: .09em;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 { line-height: 1.14; }
+    h1 { font-size: clamp(2.6rem, 5.5vw, 4.5rem); letter-spacing: -.045em; margin-bottom: 18px; }
+    h1 span { color: var(--blue); }
+    h2 { font-size: clamp(1.85rem, 4vw, 2.7rem); letter-spacing: -.035em; margin-bottom: 18px; }
+    h3 { font-size: 1.3rem; margin-bottom: 12px; }
+    .intro, .muted, .case p, .service p { color: var(--muted); }
+    .button, button {
+      display: inline-block; font: inherit; font-weight: 650; cursor: pointer;
+      padding: 10px 16px; border-radius: 8px; text-decoration: none;
+      color: white; background: var(--blue); border: 1px solid var(--blue);
+    }
+    .secondary, button { color: var(--blue); background: white; border-color: var(--line); }
+    .board, .case, .service, .contact {
+      padding: 24px; background: white; border: 1px solid var(--line); border-radius: 14px;
+    }
+    .board { box-shadow: 0 14px 42px -25px #18385a77; }
+    .board h2 { font-size: 1.3rem; margin-bottom: 4px; }
+    .board-head { align-items: start; }
+    .small, .legend { font-size: .84rem; color: var(--muted); }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 18px 0; }
+    .metric { border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+    .metric span, .metric strong { display: block; }
+    .metric span { font-size: .82rem; color: var(--muted); }
+    .metric strong { font: 650 clamp(1.35rem, 3vw, 1.85rem)/1.3 ui-monospace, monospace; }
+    #resolved { color: var(--green); }
+    #overdue { color: #9b401d; }
+    .chart {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;
+      border-bottom: 1px solid var(--line); padding-top: 8px;
+      background: repeating-linear-gradient(to top, transparent 0 31px, #edf1f5 31px 32px);
+    }
+    .column { height: 130px; display: flex; flex-direction: column; justify-content: end; }
+    .open { background: var(--amber); border-radius: 4px 4px 0 0; }
+    .closed { background: var(--blue); }
+    .days { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; text-align: center; }
+    .legend { margin: 12px 0; }
+    .key { display: inline-block; width: 11px; height: 11px; margin-right: 5px; border-radius: 2px; }
+    .strip { border-block: 1px solid var(--line); background: white; }
+    .strip p { padding: 16px 0; margin: 0; }
+    section { padding: 58px 0; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .case, .service { display: flex; flex-direction: column; }
+    .case p, .service p { font-size: .96rem; }
+    .case .small { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+    .tag { color: var(--blue); font-size: .8rem; font-weight: 700; margin-bottom: 12px; }
+    .dark { background: var(--navy); color: white; }
+    .dark .eyebrow { color: #ffce77; }
+    .dark p:last-child { margin-bottom: 0; }
+    .narrow { max-width: 70ch; }
+    .process { padding-left: 1.5em; }
+    .process li { padding: 5px 0 5px 6px; }
+    .contact { border-left: 5px solid var(--amber); }
+    footer { border-top: 1px solid var(--line); padding: 18px 0; }
+    @media (max-width: 800px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      .hero { gap: 24px; padding: 42px 0; }
+      section { padding: 38px 0; }
+      .board, .case, .service, .contact { padding: 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body id="top">
+  <header>
+    <nav class="wrap" aria-label="Main navigation">
+      <a class="brand" href="#top"><span class="mark">SR</span>Syed Shajee Ali Rizvi</a>
+      <div class="actions">
+        <a href="#work">Case studies</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <div>
+        <p class="eyebrow">Dashboard & Reporting Specialist</p>
+        <h1>Reporting that operations teams <span>actually use.</span></h1>
+        <p class="intro">I turn spreadsheets, ticketing systems and ClickUp data into Looker Studio dashboards that show where work is building up and what needs attention next.</p>
+        <div class="actions">
+          <a class="button" href="#work">View case studies</a>
+          <a class="button secondary" href="#contact">Discuss a project</a>
+        </div>
+      </div>
+
+      <section class="board" aria-labelledby="board-title">
+        <div class="board-head">
+          <div>
+            <p class="eyebrow">Interactive sample</p>
+            <h2 id="board-title">Service desk overview</h2>
+          </div>
+          <span class="small">Mon to Sat</span>
+        </div>
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><span>Tickets</span><strong id="total">269</strong></div>
+          <div class="metric"><span>Resolved</span><strong id="resolved">78%</strong></div>
+          <div class="metric"><span>Overdue</span><strong id="overdue">21</strong></div>
+        </div>
+        <strong>Tickets by day</strong>
+        <div id="chart" class="chart" aria-label="Daily closed and open tickets"></div>
+        <div class="days small" aria-hidden="true">
+          <span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div class="legend">
+          <span><i class="key closed"></i>Closed</span>
+          <span><i class="key open"></i>Open</span>
+        </div>
+        <button type="button" id="refresh">Show another sample week</button>
+      </section>
+    </div>
+
+    <div class="strip">
+      <p class="wrap"><strong>Tools:</strong> Looker Studio · Google Sheets · Apps Script · ClickUp · SQL · PostgreSQL</p>
+    </div>
+
+    <section id="work" class="wrap">
+      <p class="eyebrow">Case studies</p>
+      <h2>Three questions a dashboard can answer</h2>
+      <p class="muted">These examples use sample data, not internal records.</p>
+      <div class="grid">
+        <article class="case">
+          <span class="tag">IT operations</span>
+          <h3>Where are service desk tickets building up?</h3>
+          <p>Compare open and closed tickets by region and branch. Bring repeat issues, resolution time and overdue workload into one weekly review.</p>
+          <div class="small">Looker Studio · Sheets · Apps Script<br>Live demo coming soon</div>
+        </article>
+        <article class="case">
+          <span class="tag">Facilities & admin</span>
+          <h3>Which branch complaints need a follow-up today?</h3>
+          <p>Group pending complaints by how long they have been open. Filter by branch, category or status to find overdue cases without scanning the whole queue.</p>
+          <div class="small">Looker Studio · ClickUp · Sheets<br>Live demo coming soon</div>
+        </article>
+        <article class="case">
+          <span class="tag">Sales performance</span>
+          <h3>Where is revenue falling short of target?</h3>
+          <p>Compare monthly revenue with targets, then look at regions, products and sales reps to see what explains the gap.</p>
+          <div class="small">Looker Studio · Sheets<br>Live demo coming soon</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="about" class="dark">
+      <div class="wrap">
+        <p class="eyebrow">About</p>
+        <h2>Operations background, reporting focus</h2>
+        <p class="narrow">I build reporting and workflow systems for banking operations, covering IT service desk tickets and facilities complaints across branch networks. I connect the tools teams already use so they can spend review meetings making decisions instead of reconciling spreadsheets.</p>
+      </div>
+    </section>
+
+    <section id="services" class="wrap">
+      <p class="eyebrow">Services</p>
+      <h2>What I can build for you</h2>
+      <div class="grid">
+        <article class="service">
+          <h3>Looker Studio dashboards</h3>
+          <p>KPI scorecards, trends and filters built around the questions your managers ask.</p>
+        </article>
+        <article class="service">
+          <h3>Sheets & Apps Script automation</h3>
+          <p>Data cleaning, scheduled updates and email summaries that replace manual exports.</p>
+        </article>
+        <article class="service">
+          <h3>ClickUp reporting & workflows</h3>
+          <p>Request forms, task fields and reporting that shows ownership, ticket age and service-level breaches.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="process" class="wrap">
+      <p class="eyebrow">Process</p>
+      <h2>How a project runs</h2>
+      <ol class="process">
+        <li><strong>Discovery:</strong> Agree on the decisions the report needs to support.</li>
+        <li><strong>Data setup:</strong> Clean the source records and define each metric.</li>
+        <li><strong>Build and review:</strong> Test a working dashboard against real questions.</li>
+        <li><strong>Handover:</strong> Deliver the report, refresh setup and a short user guide.</li>
+      </ol>
+    </section>
+
+    <section id="contact" class="wrap">
+      <div class="contact">
+        <p class="eyebrow">Contact</p>
+        <h2>What does your team need to see?</h2>
+        <p>Send me the question you keep getting before every review meeting.</p>
+        <div class="actions">
+          <a class="button" href="mailto:sshajeeali@gmail.com">Email me</a>
+          <a class="button secondary" href="https://www.linkedin.com/in/syed-shajee-ali-rizvi-project-manager">Connect on LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap small">
+      <span>© Syed Shajee Ali Rizvi</span>
+      <span>All dashboard figures shown are sample data.</span>
+    </div>
+  </footer>
+
+  <script>
+    // Rows contain six daily counts in Monday-to-Saturday order.
+    const weeks = [
+      { closed: [38, 32, 42, 36, 50, 12], open: [12, 10, 14, 9, 11, 3], overdue: 21 },
+      { closed: [34, 41, 39, 44, 46, 15], open: [10, 8, 12, 7, 9, 4], overdue: 16 },
+      { closed: [43, 36, 47, 40, 44, 13], open: [9, 13, 8, 11, 7, 2], overdue: 14 }
+    ];
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    let selected = 0;
+
+    function render() {
+      const week = weeks[selected];
+      const sum = values => values.reduce((a, b) => a + b, 0);
+      const closed = sum(week.closed);
+      const total = closed + sum(week.open);
+      document.getElementById("total").textContent = total;
+      document.getElementById("resolved").textContent = Math.round(100 * closed / total) + "%";
+      document.getElementById("overdue").textContent = week.overdue;
+
+      const chart = document.getElementById("chart");
+      chart.replaceChildren();
+      days.forEach((day, i) => {
+        const column = document.createElement("div");
+        column.className = "column";
+        column.title = `${day}: ${week.closed[i]} closed, ${week.open[i]} open`;
+        column.setAttribute("role", "img");
+        column.setAttribute("aria-label", column.title);
+        for (const status of ["open", "closed"]) {
+          const segment = document.createElement("div");
+          segment.className = status;
+          segment.style.height = (100 * week[status][i] / 70) + "%";
+          column.appendChild(segment);
+        }
+        chart.appendChild(column);
+      });
+    }
+
+    document.getElementById("refresh").addEventListener("click", () => {
+      selected = (selected + 1) % weeks.length;
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>
