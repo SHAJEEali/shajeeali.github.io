@@ -1,0 +1,93 @@
+name: Portfolio safety and publish
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions: {}
+jobs:
+  check:
+    name: Check portfolio CSV safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Validate the release files
+        shell: python
+        run: |
+          import csv, io, json, re, shutil, subprocess, unicodedata
+          from pathlib import Path
+          def check(name, text):
+              width = None
+              count = 0
+              for n, row in enumerate(csv.reader(io.StringIO(text, newline=""), strict=True), 1):
+                  if width is None: width = len(row)
+                  if not width or len(row) != width: raise ValueError(f"{name}: invalid row width at row {n}")
+                  for col, value in enumerate(row, 1):
+                      value = unicodedata.normalize("NFKC", value)
+                      if any(unicodedata.category(c) in {"Cc", "Cf"} for c in value) or value.lstrip().startswith(("=", "+", "-", "@")):
+                          raise ValueError(f"{name}: unsafe spreadsheet cell at row {n}, column {col}")
+                  count += 1
+              if count < 2: raise ValueError(f"{name}: missing header or data")
+              return count - 1
+          try: check("self-test", "label\n  =\n")
+          except ValueError: pass
+          else: raise RuntimeError("Rejection self-test failed")
+          out = Path("_verified_site")
+          out.mkdir()
+          checked = {}
+          for raw in subprocess.check_output(["git", "ls-files", "-z"]).split(bytes([0])):
+              if not raw: continue
+              p = Path(raw.decode())
+              if any(part.startswith(".") for part in p.parts): continue
+              if p.is_symlink() or not p.is_file(): raise ValueError(f"Unsupported site entry: {p}")
+              if p.name == "README.md": continue
+              if p.suffix.lower() not in {".html", ".css", ".js", ".csv", ".png", ".jpg", ".jpeg", ".webp", ".ico", ".svg"} and p.name != "CNAME": raise ValueError(f"Review new public file type: {p}")
+              if p.suffix.lower() == ".csv": checked[str(p)] = check(str(p), p.read_bytes().decode("utf-8-sig"))
+              dest = out / p
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(p, dest)
+          page = (out / "templates.html").read_text(encoding="utf-8")
+          if not (out / "index.html").is_file(): raise ValueError("Missing homepage")
+          def dataset(name):
+              matches = list(re.finditer(r"\bconst\s+" + name + r"\s*=\s*", page))
+              if len(matches) != 1: raise ValueError(f"Expected exactly one {name} dataset")
+              return json.JSONDecoder().raw_decode(page[matches[0].end():])[0]
+          full, starters = dataset("sampleSets"), dataset("starterCSVs")
+          if not {"service-desk", "complaints", "sales"} <= full.keys() or full.keys() != starters.keys(): raise ValueError("Incomplete dashboard sample coverage")
+          for key, sample in full.items():
+              name = f"{key}-sample.csv (dashboard)"
+              checked[name] = check(name, sample)
+              starter = starters[key]
+              path = starter["file"]
+              if path not in checked: raise ValueError(f"Missing starter CSV: {path}")
+              check(f"{key} preview", starter["csv"])
+              if Path(path).read_text(encoding="utf-8-sig").rstrip("\n") != starter["csv"].rstrip("\n"): raise ValueError(f"Preview differs from {path}")
+          for name, count in checked.items(): print(f"PASS: {name}: {count} data rows")
+      - name: Package checked site on main pushes only
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: _verified_site
+  deploy:
+    name: Publish checked site
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: portfolio-pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - id: publish
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
