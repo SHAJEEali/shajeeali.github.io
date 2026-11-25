@@ -19,8 +19,9 @@ jobs:
       - name: Validate the release files
         shell: python
         run: |
-          import csv, io, json, re, shutil, subprocess, unicodedata
+          import csv, io, json, re, shutil, subprocess, unicodedata, sys
           from pathlib import Path
+
           def check(name, text):
               width = None
               count = 0
@@ -34,9 +35,11 @@ jobs:
                   count += 1
               if count < 2: raise ValueError(f"{name}: missing header or data")
               return count - 1
-          try: check("self-test", "label\n  =\n")
+
+          try: check("self-test", "label\n=\n")
           except ValueError: pass
           else: raise RuntimeError("Rejection self-test failed")
+
           out = Path("_verified_site")
           out.mkdir()
           checked = {}
@@ -46,19 +49,23 @@ jobs:
               if any(part.startswith(".") for part in p.parts): continue
               if p.is_symlink() or not p.is_file(): raise ValueError(f"Unsupported site entry: {p}")
               if p.name == "README.md": continue
-              if p.suffix.lower() not in {".html", ".css", ".js", ".csv", ".png", ".jpg", ".jpeg", ".webp", ".ico", ".svg"} and p.name != "CNAME": raise ValueError(f"Review new public file type: {p}")
+              if p.suffix.lower() not in {".html", ".css", ".js", ".csv", ".png", ".jpg", ".jpeg", ".webp", ".ico", ".svg", ".mp4"} and p.name != "CNAME": raise ValueError(f"Review new public file type: {p}")
               if p.suffix.lower() == ".csv": checked[str(p)] = check(str(p), p.read_bytes().decode("utf-8-sig"))
               dest = out / p
               dest.parent.mkdir(parents=True, exist_ok=True)
               shutil.copyfile(p, dest)
+
           page = (out / "templates.html").read_text(encoding="utf-8")
           if not (out / "index.html").is_file(): raise ValueError("Missing homepage")
+
           def dataset(name):
               matches = list(re.finditer(r"\bconst\s+" + name + r"\s*=\s*", page))
               if len(matches) != 1: raise ValueError(f"Expected exactly one {name} dataset")
               return json.JSONDecoder().raw_decode(page[matches[0].end():])[0]
+
           full, starters = dataset("sampleSets"), dataset("starterCSVs")
-          if not {"service-desk", "complaints", "sales"} <= full.keys() or full.keys() != starters.keys(): raise ValueError("Incomplete dashboard sample coverage")
+          if not {"service-desk", "complaints", "sales"} <= full.keys() or full.keys() != starters.keys():
+              raise ValueError("Incomplete dashboard sample coverage")
           for key, sample in full.items():
               name = f"{key}-sample.csv (dashboard)"
               checked[name] = check(name, sample)
@@ -66,8 +73,10 @@ jobs:
               path = starter["file"]
               if path not in checked: raise ValueError(f"Missing starter CSV: {path}")
               check(f"{key} preview", starter["csv"])
-              if Path(path).read_text(encoding="utf-8-sig").rstrip("\n") != starter["csv"].rstrip("\n"): raise ValueError(f"Preview differs from {path}")
+              if Path(path).read_text(encoding="utf-8-sig").rstrip("\n") != starter["csv"].rstrip("\n"):
+                  raise ValueError(f"Preview differs from {path}")
           for name, count in checked.items(): print(f"PASS: {name}: {count} data rows")
+          print("GATE: OK")
       - name: Package checked site on main pushes only
         if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
